@@ -8,6 +8,7 @@ import com.example.demo.model.Training;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,17 +24,25 @@ public class TrainingServiceImpl implements TrainingService {
     TrainingMapStructMapper trainingMapper;
 
     @Override
-    public void deleteTrainingById(Long id){
+    public void deleteTrainingById(Long id) {
         trainingRepository.deleteById(id);
         log.info("Training with id {} is deleted", id);
     }
 
     @Override
     public Training updateTrainingById(Long id, Training training) {
-        TrainingDAO trainingUpdatedDAO =
-                trainingRepository.save(trainingMapper.mapToDAO(training));
-        log.info("Training saved: {}", () -> trainingUpdatedDAO);
-        return trainingMapper.mapFromDAO(trainingUpdatedDAO);
+        Optional<TrainingDAO> trainingDAO = trainingRepository.findById(id);
+        if (!trainingDAO.isPresent()) {
+            return save(training);
+        }
+        TrainingDAO existingTraining = trainingDAO.get();
+        if (!StringUtils.isEmpty(training.getTitle())) {
+            existingTraining.setTitle(training.getTitle());
+        }
+        if (!StringUtils.isEmpty(training.getDescription())) {
+            existingTraining.setDescription(training.getDescription());
+        }
+        return trainingMapper.mapFromDAO(trainingRepository.save(existingTraining));
     }
 
     @Override
@@ -57,7 +66,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public Training save(Long id, Training training) throws Exception {
+    public Training save(Training training) {
         log.info("Create new Training by passing : {}", training);
         TrainingDAO trainingSaved = trainingRepository.save(trainingMapper.mapToDAO(training));
         log.info("New Training saved: {}", () -> trainingSaved);

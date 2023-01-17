@@ -13,7 +13,7 @@ public interface TrainingService {
 
     Optional<Training> findTrainingById(Long id);
 
-    Training save(Long id, Training training) throws Exception;
+    Training save(Training training);
 
     List<Training> findAll();
 }

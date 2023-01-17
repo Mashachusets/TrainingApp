@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,8 +54,8 @@ public class TrainingController {
             notes = "If provided valid training Id, returns it",
             response = Training.class)
     public ResponseEntity<Training> getByIdTraining(@ApiParam(value = "id of training", required = true)
-                                                    @lombok.NonNull @PathVariable Long idTraining, Model theModel) {
-        Optional<Training> theTraining = trainingService.findTrainingById(idTraining);
+                                                    @NonNull @PathVariable Long id) {
+        Optional<Training> theTraining = trainingService.findTrainingById(id);
         return ResponseEntity.of(theTraining);
     }
 
@@ -73,11 +72,8 @@ public class TrainingController {
             @ApiResponse(code = 500, message = "Server error")}
     )
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Training> saveTraining(@RequestBody Training training, BindingResult bindingResult ) throws Exception {
-//        if(training.getId()!=0){
-//            return ResponseEntity.badRequest().build();
-//        }
-        Training trainingPost = trainingService.save(training.getId(), training);
+    public ResponseEntity<Training> saveTraining(@RequestBody Training training) {
+        Training trainingPost = trainingService.save(training);
         return new ResponseEntity<>(trainingPost, HttpStatus.CREATED);
     }
 
@@ -93,17 +89,13 @@ public class TrainingController {
             @ApiResponse(code = 404, message = "The server has not found anything matching the Request-URI"),
             @ApiResponse(code = 500, message = "Server error")})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    ResponseEntity<Training> updateTraining(@ApiParam(value = "The id of training", required = true)
-                                            @NonNull @PathVariable Long id, @RequestBody Training training) throws Exception {
+    public ResponseEntity<Training> updateTraining(@ApiParam(value = "The id of training", required = true)
+                                                   @NonNull @PathVariable Long id, @RequestBody Training training) throws Exception {
+
         log.info("Update existing training with ID: {} and new body: {}", id, training);
-        Optional<Training> trainingFound = trainingService.findTrainingById(id);
-        if (!(trainingFound.isPresent())) {
-            log.warn("Training for update with id {} is not found.", id);
-            return ResponseEntity.notFound().build();
-        }
-        trainingService.updateTrainingById(id, training);
+        Training updatedTraining = trainingService.updateTrainingById(id, training);
         log.info("Training with id {} is updated: {}", id, training);
-        return new ResponseEntity<>(training, HttpStatus.CREATED);
+        return new ResponseEntity<>(updatedTraining, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/trainings/{id}")
