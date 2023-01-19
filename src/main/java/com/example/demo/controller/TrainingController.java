@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-@Api
+@Api(tags = "Training Controller", description = "Controller Used to get, create, update and delete trainings")
 @Log4j2
 @RestController
 @RequestMapping("/api")
@@ -78,7 +78,7 @@ public class TrainingController {
     }
 
     @PutMapping("/trainings/{id}")
-    @ApiOperation(value = "Updates training",
+    @ApiOperation(value = "Updates training by Id",
             notes = "Updates training if provided id exists",
             response = Training.class)
     @ApiResponses(value = {
@@ -99,7 +99,7 @@ public class TrainingController {
     }
 
     @DeleteMapping("/trainings/{id}")
-    @ApiOperation(value = "Deletes training by id",
+    @ApiOperation(value = "Deletes training by Id",
             notes = "Deletes training if provided id exists",
             response = Training.class)
     @ApiResponses(value = {
