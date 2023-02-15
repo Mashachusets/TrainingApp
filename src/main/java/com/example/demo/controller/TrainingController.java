@@ -32,7 +32,7 @@ import java.util.Optional;
 public class TrainingController {
 
     @Autowired
-    TrainingService trainingService;
+    private TrainingService trainingService;
 
     @GetMapping("/trainings")
     @ApiOperation(value = "Finds all trainings status info",

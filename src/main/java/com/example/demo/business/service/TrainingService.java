@@ -1,7 +1,6 @@
 package com.example.demo.business.service;
 
 import com.example.demo.model.Training;
-
 import java.util.List;
 import java.util.Optional;
 

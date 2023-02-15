@@ -9,7 +9,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,9 +18,9 @@ import java.util.stream.Collectors;
 public class TrainingServiceImpl implements TrainingService {
 
     @Autowired
-    TrainingRepository trainingRepository;
+    private TrainingRepository trainingRepository;
     @Autowired
-    TrainingMapStructMapper trainingMapper;
+    private TrainingMapStructMapper trainingMapper;
 
     @Override
     public void deleteTrainingById(Long id) {
@@ -55,13 +54,13 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public List<Training> findAll() {
-        log.info("Retrieve list of intern project histories");
+        log.info("Retrieve list of trainings");
         List<TrainingDAO> trainingDAOList = trainingRepository.findAll();
         if (trainingDAOList.isEmpty()) {
-            log.warn("Intern project history list is empty! {}", trainingDAOList);
+            log.warn("Training list is empty! {}", trainingDAOList);
             return null;
         }
-        log.debug("Intern project history list is found. Size: {}", trainingDAOList::size);
+        log.debug("Training list is found. Size: {}", trainingDAOList::size);
         return trainingDAOList.stream().map(trainingMapper::mapFromDAO).collect(Collectors.toList());
     }
 
